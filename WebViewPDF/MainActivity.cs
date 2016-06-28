@@ -21,6 +21,7 @@ namespace WebViewPDF
     {
         WebView web_view;
 
+        // Can load the html to the webview, but I chose to use an HTML page. 
         //const string html = @"
         //<html>
         //  <body>
@@ -37,8 +38,13 @@ namespace WebViewPDF
             SetContentView(Resource.Layout.Main);
 
             web_view = FindViewById<WebView>(Resource.Id.webview);
+
+            // need to enable JavaScript.
             web_view.Settings.JavaScriptEnabled = true;
             web_view.SetWebChromeClient(new WebChromeClient());
+
+            // Add the interface between C# and Javascript.  The Name "CSharp" is what will
+            // be used on the Javascript side to call back to C#.
             web_view.AddJavascriptInterface(new MyJSInterface(this, Application), "CSharp");
             //WebView.SetWebContentsDebuggingEnabled(true);
             web_view.LoadUrl("file:///android_asset/Content/index.html");
@@ -47,6 +53,7 @@ namespace WebViewPDF
         }
     }
 
+    // Interface between C# and Javascript
     class MyJSInterface : Java.Lang.Object
     {
         Context context;
@@ -57,18 +64,18 @@ namespace WebViewPDF
 
         public MyJSInterface(Activity activity, Application application)
         {
+            // still trying to understand the difference between these and 
+            // how to get each one, so I don't have to pass them all in.
+            var temp = Android.App.Application.Context;
             this.context = activity;
             this.application = application;
             this.activity = activity;
-
 
             // Initialize the scanner first so we can track the current context
             MobileBarcodeScanner.Initialize(application);
 
             //Create a new instance of our Scanner
             scanner = new MobileBarcodeScanner();
-
-
         }
 
         [Export]
@@ -82,6 +89,25 @@ namespace WebViewPDF
         [JavascriptInterface]
         public async void ScanPDF()
         {
+            //Tell our scanner to activiyt use the default overlay
+            scanner.UseCustomOverlay = false;
+
+            //We can customize the top and bottom text of the default overlay
+            scanner.TopText = "Hold the camera up to the barcode\nAbout 6 inches away";
+            scanner.BottomText = "Wait for the barcode to automatically scan!";
+
+            //Start scanning
+            var result = await scanner.Scan();
+
+            // Handler for the result returned by the scanner.
+            HandleScanResult(result);
+        }
+
+        [Export]
+        [JavascriptInterface]
+        public async void ScanImage()
+        {
+            // THIS ISN'T WORKING AS OF NOW.
             var beachImage = new Xamarin.Forms.Image { Aspect = Xamarin.Forms.Aspect.AspectFit };
             beachImage.Source = Xamarin.Forms.ImageSource.FromFile("QR_Code_Test.jpg");
 
@@ -104,6 +130,7 @@ namespace WebViewPDF
             HandleScanResult(result);
         }
 
+
         void HandleScanResult(ZXing.Result result)
         {
             string msg = "";
@@ -113,10 +140,12 @@ namespace WebViewPDF
             else
                 msg = "Scanning Canceled!";
 
+            
             WebView web_view = activity.FindViewById<WebView>(Resource.Id.webview);
 
             var rtnString = string.Format("javascript:document.getElementById('txtContent').value = '{0}'", msg);
 
+            // Detect which version of Android OS is running.
             if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
             {
                 //web_view.EvaluateJavascript(string.Format("javascript:zxinResult({0})", msg), null);
@@ -137,18 +166,6 @@ namespace WebViewPDF
                     h.Post(() => { web_view.LoadUrl(rtnString); Console.WriteLine("complete"); });
 
             }
-
-
-
-            //activity.RunOnUiThread(
-            //    new Runnable() {
-            //        public void run()
-            //        {
-            //            WebView web_view = activity.FindViewById<WebView>(Resource.Id.webview);
-            //            web_view.EvaluateJavascript("alert('hi ryan');", null);
-            //        }
-            //    }
-            //);
         }
 
         //Interesting method
@@ -173,6 +190,7 @@ namespace WebViewPDF
         //    return decoded;
         //}
 
+        // Something I am trying to get image scanning
         private void ReadBarcode()
         {
             try
