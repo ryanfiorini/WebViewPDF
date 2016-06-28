@@ -1,0 +1,20 @@
+﻿<html>
+<head>
+    <title>Load Content From PDF</title>
+    <script>
+            function zxinResult(msg) {
+                alert('hi valerie');
+                document.getElementById("txtContent").value = msg;
+                alert('hi ryan');
+
+            }
+    </script>
+</head>
+<body>
+    <h1>Load Content From PDF</h1>
+    <img src="../QR_Code_Test.jpg" />
+    <input type="text" id="txtContent" />
+    <button type="button" onClick="CSharp.ShowToast()">Call C#</button>
+    <button type="button" onClick="CSharp.ScanPDF()">Launch PDF scanner</button>
+</body>
+</html>
