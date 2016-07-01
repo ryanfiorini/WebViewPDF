@@ -130,13 +130,20 @@ namespace WebViewPDF
             HandleScanResult(result);
         }
 
+        [Export]
+        [JavascriptInterface]
+        public void MockImage()
+        {
+            var result = new ZXing.Result("QR Code Test",null, null, BarcodeFormat.QR_CODE);
+            HandleScanResult(result);
+        }
 
         void HandleScanResult(ZXing.Result result)
         {
             string msg = "";
 
             if (result != null && !string.IsNullOrEmpty(result.Text))
-                msg = "Found Barcode: " + result.Text;
+                msg = result.Text;
             else
                 msg = "Scanning Canceled!";
 

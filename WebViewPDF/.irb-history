@@ -1,0 +1,50 @@
+query("webView css:'*'")
+query("webview", {calabashStringByEvaluatingJavaScript: 'document.getElementById("txtContent").value'}) 
+query("webview", :stringByEvaluatingJavaScriptFromString  => 'document.getElementById("txtContent").value'}) 
+query("webview", :stringByEvaluatingJavaScriptFromString  => 'document.getElementById("txtContent").value') 
+query("webview", :stringByEvaluatingJavaScriptFromString  => 'document.body.innerHTML') 
+query("webview index:0", :loadUrl  => 'javascript:alert("hello")') 
+query("webview", :loadUrl => 'javascript:return document.getElementById("txtContent").value') 
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent").value') 
+start_test_server_in_background
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent").value') 
+start_test_server_in_background
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent").value; return false;') 
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent").value; return false;') 
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent").text; return false;') 
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent"); return false;') 
+query("webview index:0", :loadUrl => 'javascript:document.getElementById("txtContent"); return false;') 
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent"); return false;') .first
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent"),value; return false;') .first
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent").value; return false;') .first
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent")[0].value; return false;') .first
+query("webview", :loadUrl => 'javascript:document.getElementById("txtContent")[0].value; false;') .first
+query("webview", :loadUrl => 'javascript:document.body; false;') .first
+evaluate_javascript("webview", "return document.getElementById('txtContent')")
+query("webView css:'*'")
+evaluate_javascript("webview", "return document.getElementById('mockImage')")
+evaluate_javascript("webview", "return document.queryWelector('#mockImage')")
+evaluate_javascript("webview", "return document.querySelector('#mockImage')")
+evaluate_javascript("webview", "return document.querySelector('#mockImage')")[0]
+evaluate_javascript("webview", "return document.querySelector('input')")
+evaluate_javascript("webview", "return document.querySelector('body')")
+evaluate_javascript("webview", "document.querySelector('body')")
+evaluate_javascript("webview", "return document.querySelector('body').innerHTML")
+evaluate_javascript("webview", "return document.querySelector('#txtContent').innerHTML")
+evaluate_javascript("webview", "return document.querySelector('#txtContent').value")
+evaluate_javascript("webview index:0", "return document.querySelector('#txtContent').value")
+evaluate_javascript("webview", "return document.querySelector('#txtContent').value")exit
+exit
+start_test_server_in_background
+query("all webView css:'#mockImage'")
+exit
+start__t
+start_test_server_in_background
+exit
+start_test_server_in_background
+exit
+start_t
+start_test_server_in_background
+touch("all webView css:'#mockImage'")
+evaluate_javascript("webview", "return document.querySelector('#mockImage').onclick()")
+exit
